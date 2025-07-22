@@ -8,7 +8,6 @@ from typing import Optional
 import uuid
 from datetime import datetime
 import sys
-from custom_transformers import AdvancedFeatureCreator
 
 # ----------------------------------------
 # App Initialization
@@ -35,14 +34,18 @@ app.add_middleware(
 # Load Trained Pipeline
 # ----------------------------------------
 
-MODEL_PATH = "Model_Training/final_pipeline.joblib"  # Update if stored elsewhere
+MODEL_PATH = "Model_Training/final_pipeline.joblib"
+TARGET_ENCODER_PATH = "Model_Training/target_encoder.joblib"
 
 try:
     model_pipeline = joblib.load(MODEL_PATH)
-    print("✅ Model pipeline loaded successfully!")
+    target_encoder = joblib.load(TARGET_ENCODER_PATH)
+    print("Model pipeline loaded successfully!")
+    print("Target encoder loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading model pipeline: {e}")
+    print(f"Error loading model components: {e}")
     model_pipeline = None
+    target_encoder = None
 
 # ----------------------------------------
 # Request & Response Models
@@ -69,13 +72,14 @@ class PredictionResponse(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "🎯 PersonaSense API is live and running!"}
+    return {"message": "PersonaSense API is live and running!"}
 
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy",
         "model_loaded": model_pipeline is not None,
+        "target_encoder_loaded": target_encoder is not None,
         "timestamp": datetime.now().isoformat()
     }
 
@@ -84,8 +88,8 @@ async def predict_personality(data: PersonalityData):
     """
     Predict personality type based on user-submitted social behavior inputs.
     """
-    if model_pipeline is None:
-        raise HTTPException(status_code=500, detail="Model pipeline not loaded.")
+    if model_pipeline is None or target_encoder is None:
+        raise HTTPException(status_code=500, detail="Model pipeline or target encoder not loaded.")
 
     try:
         # Generate user ID and timestamp
@@ -107,14 +111,18 @@ async def predict_personality(data: PersonalityData):
         os.makedirs("predictions", exist_ok=True)
         input_df.to_csv(f"predictions/input_{user_id}_{timestamp[:10]}.csv", index=False)
 
-        # Make prediction
-        prediction = model_pipeline.predict(input_df)[0]
+        # Make prediction using the pipeline (returns encoded prediction)
+        prediction_encoded = model_pipeline.predict(input_df)[0]
+        
+        # Convert encoded prediction back to original label
+        prediction = target_encoder.inverse_transform([prediction_encoded])[0]
 
         # Get prediction confidence
         try:
             proba = model_pipeline.predict_proba(input_df)[0]
             confidence = max(proba) * 100
-        except:
+        except Exception as prob_error:
+            print(f"Warning: Could not get prediction probabilities: {prob_error}")
             confidence = 85.0  # fallback if predict_proba is not supported
 
         # Return response
@@ -126,6 +134,7 @@ async def predict_personality(data: PersonalityData):
         )
 
     except Exception as e:
+        print(f"Prediction error details: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
 # ----------------------------------------
