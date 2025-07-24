@@ -9,9 +9,8 @@ import uuid
 from datetime import datetime
 import sys
 
-# ----------------------------------------
+
 # App Initialization
-# ----------------------------------------
 
 app = FastAPI(title="PersonaSense API", version="1.0.0")
 
@@ -30,9 +29,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----------------------------------------
+
 # Load Trained Pipeline
-# ----------------------------------------
 
 MODEL_PATH = "Model_Training/final_pipeline.joblib"
 TARGET_ENCODER_PATH = "Model_Training/target_encoder.joblib"
@@ -47,10 +45,8 @@ except Exception as e:
     model_pipeline = None
     target_encoder = None
 
-# ----------------------------------------
-# Request & Response Models
-# ----------------------------------------
 
+# Request & Response Models
 class PersonalityData(BaseModel):
     Social_event_attendance: int
     Going_outside: int
@@ -66,9 +62,8 @@ class PredictionResponse(BaseModel):
     user_id: str
     timestamp: str
 
-# ----------------------------------------
+
 # Routes
-# ----------------------------------------
 
 @app.get("/")
 async def root():
@@ -137,9 +132,7 @@ async def predict_personality(data: PersonalityData):
         print(f"Prediction error details: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
-# ----------------------------------------
 # Run with Uvicorn (local dev)
-# ----------------------------------------
 
 if __name__ == "__main__":
     import uvicorn
