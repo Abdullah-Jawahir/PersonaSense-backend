@@ -11,7 +11,6 @@ import sys
 
 
 # App Initialization
-
 app = FastAPI(title="PersonaSense API", version="1.0.0")
 
 # CORS settings (frontend access control)
@@ -31,7 +30,6 @@ app.add_middleware(
 
 
 # Load Trained Pipeline
-
 MODEL_PATH = "Model_Training/final_pipeline.joblib"
 TARGET_ENCODER_PATH = "Model_Training/target_encoder.joblib"
 
@@ -64,7 +62,6 @@ class PredictionResponse(BaseModel):
 
 
 # Routes
-
 @app.get("/")
 async def root():
     return {"message": "PersonaSense API is live and running!"}
@@ -133,7 +130,6 @@ async def predict_personality(data: PersonalityData):
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
 # Run with Uvicorn (local dev)
-
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
