@@ -5,18 +5,21 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
 ## Setup
 
 1. **Install Python dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 2. **Run the FastAPI server:**
+
    ```bash
    python main.py
    ```
-   
+
    Or using uvicorn directly:
+
    ```bash
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   uvicorn main:app --reload
    ```
 
 3. **Access the API:**
@@ -27,18 +30,22 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
 ## API Endpoints
 
 ### GET `/`
+
 - Health check endpoint
 - Returns a simple message confirming the API is running
 
 ### GET `/health`
+
 - Detailed health check
 - Returns status, model loading status, and timestamp
 
 ### POST `/predict`
+
 - Main prediction endpoint
 - Accepts personality quiz data and returns AI prediction
 
 **Request Body:**
+
 ```json
 {
   "Social_event_attendance": 5,
@@ -52,6 +59,7 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
 ```
 
 **Response:**
+
 ```json
 {
   "prediction": "Introvert",
@@ -77,6 +85,7 @@ This model predicts personality types (Introvert/Extrovert) based on user respon
 ## CORS
 
 The API is configured to accept requests from:
+
 - `http://localhost:5173` (Vite dev server)
 - `http://localhost:3000` (Alternative dev server)
 - `http://127.0.0.1:5173` (Alternative localhost)
@@ -85,4 +94,4 @@ The API is configured to accept requests from:
 
 - Returns 500 error if model fails to load
 - Returns 500 error if prediction fails
-- Includes detailed error messages for debugging 
+- Includes detailed error messages for debugging
