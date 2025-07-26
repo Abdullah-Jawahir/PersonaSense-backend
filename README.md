@@ -72,7 +72,7 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
 ## Model
 
 The backend uses a pre-trained machine learning model located at:
-`Model Training/full_personality_prediction_pipeline.pkl`
+`Model_Training/final_pipeline.joblib`
 
 This model predicts personality types (Introvert/Extrovert) based on user responses to the personality quiz.
 
@@ -86,7 +86,8 @@ This model predicts personality types (Introvert/Extrovert) based on user respon
 
 The API is configured to accept requests from:
 
-- `http://localhost:5173` (Vite dev server)
+- `http://localhost:8080` (Vite dev server - I)
+- `http://localhost:5173` (Alternative dev server)
 - `http://localhost:3000` (Alternative dev server)
 - `http://127.0.0.1:5173` (Alternative localhost)
 
