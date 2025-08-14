@@ -4,9 +4,10 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
 
 ## Setup
 
-1. **Navigate to the backend directory:**
+1. **Clone the repository:**
 
    ```bash
+   git clone https://github.com/Abdullah-Jawahir/PersonaSense-backend.git
    cd PersonaSense-backend
    ```
 
