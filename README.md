@@ -36,13 +36,7 @@ This is the FastAPI backend for the PersonaSense personality prediction applicat
    pip install -r requirements.txt
    ```
 
-5. **Run the FastAPI server:**
-
-   ```bash
-   python main.py
-   ```
-
-   Or using uvicorn directly:
+5. **Run the FastAPI server using uvicorn directly:**
 
    ```bash
    uvicorn main:app --reload
